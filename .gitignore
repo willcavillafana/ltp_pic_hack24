@@ -1,0 +1,7 @@
+*.o
+pic*
+Output/
+Checkpoint/
+slurm*
+*.png
+*.swp

@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --ntasks-per-socket=1
+#SBATCH --exclusive
+#SBATCH --time=00:30:00
+#SBATCH -q stellar-debug
+##SBATCH -q pppl-medium
+##SBATCH --mail-type=all
+##SBATCH --mail-user=netid@princeton.edu
+
+
+# Load openmpi environment
+export OMP_NUM_THREADS=1
+#export OMP_PLACES=cores
+#export OMP_PROC_BIND=spread
+
+module purge
+module load intel/2021.1.2
+module load openmpi/intel-2021.1/4.1.2
+
+srun ./pic example2d.dat

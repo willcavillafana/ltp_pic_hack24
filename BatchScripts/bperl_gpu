@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH -A mxxxx_g
+#SBATCH -C gpu
+#SBATCH -q debug
+#SBATCH -t 00:30:00
+#SBATCH -N 1
+#SBATCH --ntasks-per-node=4
+#SBATCH --gpu-bind=map_gpu:0,1,2,3
+#SBATCH -c 32
+#SBATCH --gpus-per-task=1
+##SBATCH --mail-type=all
+##SBATCH --mail-user=
+
+
+# Load openmpi environment
+export OMP_NUM_THREADS=1
+export SLURM_CPU_BIND="cores"
+#export OMP_PLACES=cores
+#export OMP_PROC_BIND=spread
+
+#module purge
+#module load PrgEnv-nvidia/8.3.3
+
+srun ./pic example2d.dat

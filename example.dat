@@ -1,0 +1,136 @@
+#Time Stepping Control
+time_step_size 1.0e-10
+number_steps 10
+print_interval 5
+checkpoint_interval 100000
+
+#Numerics
+solver_id 31
+hypre_gpu 0
+random_seed 1 #If not set pulls from dev/urandom
+
+#Models
+relative_permittivity 1.0
+
+#Grid Properties
+nx 64
+ny 64
+xmin 0.0
+xmax 0.064
+ymin 0.0
+ymax 0.064
+num_process_x 1
+num_process_y 1
+num_regions_x 1
+num_regions_y 1
+
+#Boundary conditions, 0 - periodic, 1 - dirichlet, 2 - neumann
+xbound_min 0
+xbound_max 0
+ybound_min 0
+ybound_max 0
+xbound_min_val 0.0
+xbound_max_val 0.0
+ybound_min_val 0.0
+ybound_max_val 0.0
+
+
+#Species
+species 1
+clumping 5531250.0
+charge -1.0
+mass 1.0
+magnetized 1
+
+species 2
+clumping 5531250.0
+charge 1.0
+mass 7352.9411764706
+magnetized 1
+
+
+#Creation
+plasma 1
+plasma_species 1
+plasma_density 5.53125e14
+plasma_xmin 0.0
+plasma_xmax 0.064
+plasma_ymin 0.0
+plasma_ymax 0.064
+plasma_temperature 10.0
+plasma_kinetic_x 0.0
+plasma_kinetic_y 0.0
+plasma_kinetic_z 0.0
+
+plasma 2
+plasma_species 2
+plasma_density 5.53125e14
+plasma_xmin 0.0
+plasma_xmax 0.064
+plasma_ymin 0.0
+plasma_ymax 0.064
+plasma_temperature 0.01
+plasma_kinetic_x 0.0
+plasma_kinetic_y 0.0
+plasma_kinetic_z 0.0
+
+
+
+#Collisions
+elastic 1
+species_in 1
+neutral_density 9.64e20
+neutral_temperature 0.02585198
+neutral_mass 7352.9411764706
+xsection_file XSections/Turner2013/e_he_elastic.dat
+
+excitation 1
+species_in 1
+neutral_density 9.64e20
+neutral_temperature 0.02585198
+neutral_mass 7352.9411764706
+neutral_excitation_energy 19.82
+xsection_file XSections/Turner2013/e_he_excite1.dat
+
+excitation 2
+species_in 1
+neutral_density 9.64e20
+neutral_temperature 0.02585198
+neutral_mass 7352.9411764706
+neutral_excitation_energy 20.61
+xsection_file XSections/Turner2013/e_he_excite2.dat
+
+ionization 1
+electron_in 1
+ion_out 2
+neutral_density 9.64e20
+neutral_temperature 0.02585198
+neutral_ionization_energy 24.587
+ionization_b_value 10.0 #This is the value for Argon
+xsection_file XSections/Turner2013/e_he_ionize.dat
+
+elastic 2
+species_in 2
+neutral_density 9.64e20
+neutral_temperature 0.02585198
+xsection_file XSections/Turner2013/he+_he_elastic_iso.dat
+
+cxchange 1
+ion_in 2
+neutral_density 9.64e20
+neutral_temperature 0.02585198
+xsection_file XSections/Turner2013/he+_he_elastic_back.dat
+
+
+
+#Output settings
+print_densities 1
+print_charge_density 1
+print_potential 1
+print_fields 1
+print_current_densities 1
+print_temperatures 1
+print_velocity_moments 1
+print_total_particles 1
+print_total_momentum 1
+print_total_energy 1

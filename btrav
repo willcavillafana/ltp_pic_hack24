@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+##SBATCH --ntasks-per-socket=2
+#SBATCH --cpus-per-task=32
+#SBATCH --gpu-bind=map_gpu:0,1,2,3
+#SBATCH --gpus-per-task=1
+#SBATCH --time=00:10:00
+#SBATCH -A pppl
+#SBATCH --reservation=test
+##SBATCH --mail-type=all
+##SBATCH --mail-user=netid@princeton.edu
+
+
+# Load openmpi environment
+export OMP_NUM_THREADS=1
+#export OMP_PLACES=cores
+
+module load nvhpc/22.5
+module load openmpi/nvhpc-22.5/4.1.3/64
+
+srun ./pic example.dat

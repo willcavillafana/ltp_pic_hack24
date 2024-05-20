@@ -1,0 +1,5 @@
+#Dummy file for fixed frequency collisions
+#Date: 24/11/2021
+#Data format: [energy [eV], Cross section [m^2]]
+0.000 1.0
+10000.0 1.0

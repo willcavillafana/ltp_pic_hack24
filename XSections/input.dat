@@ -1,0 +1,118 @@
+#Time Stepping Control
+time_step_size 40.0e-12
+number_steps 10#12500001
+print_interval 1250
+sort_interval 0
+checkpoint_interval 1000000
+field_subcycle 1
+solver_id 1
+hypre_gpu 0
+
+#Grid Properties
+nx 256
+ny 256
+xmin -0.025
+xmax 0.025
+ymin -0.025
+ymax 0.025
+num_process_x 2
+num_process_y 2
+num_regions_x 1
+num_regions_y 1
+
+#Boundary conditions, 0 - periodic, 1 - dirichlet, 2 - neumann
+xbound_min 1
+xbound_max 1
+ybound_min 1
+ybound_max 1
+xbound_min_val 0.0
+xbound_max_val 0.0
+ybound_min_val 0.0
+ybound_max_val 0.0
+
+#Models
+relative_permittivity 1.0
+
+#Species
+species 1
+clumping 1.0e5
+charge -1.0
+mass 1.0
+magnetized 1
+subcycle 1
+print_frac 0.0001
+
+species 2
+clumping 1.0e5
+charge 1.0
+mass 7291.712
+magnetized 1
+subcycle 1
+print_frac 0.0001
+
+
+
+#Creation
+source 1
+source_species 1
+source_xmin -0.001
+source_xmax 0.005
+source_ymin -0.001
+source_ymax 0.001
+source_temperature 15.0
+source_average_current -254.648
+source_kinetic_x 0.0
+source_kinetic_y 0.0
+source_kinetic_z 0.0
+
+source 2
+source_species 2
+source_xmin -0.001
+source_xmax 0.005
+source_ymin -0.001
+source_ymax 0.001
+source_temperature 0.025
+source_average_current 101.8592
+source_kinetic_x 0.0
+source_kinetic_y 0.0
+source_kinetic_z 0.0
+
+
+#Collision Models
+#elastic 1
+#species_in 1
+#neutral_density 1.0e20
+#neutral_temperature 0.025
+#neutral_mass 7348.0
+#xsection_file coll_dummy.dat
+
+
+#ionization 1
+#electron_in 1
+#electron_out 1
+#ion_out 2
+#neutral_density 1.0e22
+#neutral_temperature 0.025
+#neutral_mass 7348.0
+#neutral_ionization_energy 24.587
+#xsection_file e_he_ionize.dat
+
+
+#excitation 1
+#species_in 1
+#neutral_density 1.0e20
+#neutral_temperature 0.025
+#neutral_mass 7348.0
+#neutral_excitation_energy 10.0
+#xsection_file coll_dummy.dat
+
+
+
+#Output settings
+print_particle_phase 0
+print_densities 1
+print_temperatures 1
+print_currents 1
+print_charge_densities 1
+print_potential 1
+print_fields 1

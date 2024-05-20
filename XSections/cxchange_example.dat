@@ -1,0 +1,42 @@
+##this is a comment
+#0.0 0.0
+#1.0 13.0e-10 #this is another comment
+#10.0 1.0e-8
+#100.0 40.0e-8
+#200.0 1.0e-10
+#
+#Updated by Grant Johnson
+#Date: 3/23/2021
+#Data format: [energy [eV], Cross section [m^2]]
+#Table ref: Nichols, Billy J., and Fred C. Witteborn. Measurements of resonant charge exchange cross sections in nitrogen and argon between 0.5 and 17 eV. National Aeronautics and Space Administration, 1966.
+#Table from: https://ntrs.nasa.gov/api/citations/19660006802/downloads/19660006802.pdf?attachment=true
+0.4 65.0e-20
+1.0 51.4e-20
+1.6 50.4e-20
+2.2 47.9e-20
+2.3 47.6e-20
+2.9 41.7e-20
+3.5 48.3e-20
+3.7 40.0e-20
+4.3 43.7e-20
+4.5 46.2e-20
+4.9 41.7e-20
+5.5 43.1e-20
+5.5 35.4e-20
+6.1 38.2e-20
+6.7 35.3e-20
+7.9 31.5e-20
+8.0 39.6e-20
+8.5 28.8e-20
+9.0 41.7e-20
+9.1 39.2e-20
+9.7 30.1e-20
+10.7 36.8e-20
+10.8 35.4e-20
+12.0 35.3e-20
+13.0 30.1e-20
+13.9 29.0e-20
+14.0 35.3e-20
+15.1 30.5e-20
+16.5 25.2e-20
+17.0 32.9e-20

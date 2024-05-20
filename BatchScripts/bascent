@@ -1,0 +1,18 @@
+#!/bin/bash
+# Begin LSF Directives
+#BSUB -P GEN137
+#BSUB -W 0:10
+#BSUB -nnodes 1
+#BSUB -J ltp-pic
+#BSUB -o ltp-pic.%J
+#BSUB -e ltp-pic.%J
+#BSUB -u apowis@pppl.gov
+#BSUB -N
+#BSUB -alloc_flags smt1
+
+#export ACC_NUM_CORES=1
+
+#jsrun -n 1 -a 1 -c 1 -g 0 -b packed:1 -d packed ./pic
+jsrun -n 1 -a 1 -c 1 -g 1 -b packed:1 -d packed ./pic
+
+
