@@ -203,6 +203,7 @@ struct CreatePlasma {
 	int snum;
 	int sindex;
 	double n0_plasma;
+	int npart;
 	long long int Npart_plasma;
 	long long int Npart_plasma_region;
 	int Npart_plasma_local;

@@ -1027,7 +1027,7 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 	#else
 	#pragma omp parallel
 	#endif
-    	{
+    {
 
 	int j, I, J, k, nl, m;
 	double x, vx, vy, vz, v, v2, kev;
@@ -1067,30 +1067,11 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 	#else
 	#pragma omp for
 	#endif
-    	//for (i = istart; i < iend; i++)
 	for (i = 0; i < ncoll; i++)
-    	{
-
-		// //Testing particle for collision
-		// icount = species->rncount + 2*i;
-		// if (get_uniform_prn(species->process_data, species->thread_data, icount+0, &iprn) >= pmax) {
-		// 	continue;
-		// }
-		//
-		// //Adding to collision count
-		// #ifdef _OPENACC
-		// #pragma acc atomic
-		// #else
-		// #pragma omp atomic
-		// #endif
-		// ccoll++;
+    {
 
 		//Getting the particle index
 		I = species->coll_index[i];
-
-		//printf("\nI[%d] = %d",i,I);
-
-		//continue;
 
 		//Get particle data
 		vx = VX[I];

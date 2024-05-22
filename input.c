@@ -252,18 +252,18 @@ void ProcessingInput(struct Control *control, struct AllSpecies *allspecies, str
 
 	timer->Nsteps = GetInputValueInt(control, 0, control->input_nlines, "number_steps", 0, "MISSING: number_steps\nEXITING\n", 1);
 
-	timer->print_interval = GetInputValueInt(control, 0, control->input_nlines, "print_interval", 0, "MISSING: print_interval\nSet to default of 0 (none)\n", 0);
+	//timer->print_interval = GetInputValueInt(control, 0, control->input_nlines, "print_interval", 0, "MISSING: print_interval\nSet to default of 0 (none)\n", 0);
 
 	timer->sort_interval = 0;
 
-	timer->checkpoint_interval = GetInputValueInt(control, 0, control->input_nlines, "checkpoint_interval", 0, "MISSING: checkpoint_interval\nSet to default of 0 (none)\n", 0);
+	//timer->checkpoint_interval = GetInputValueInt(control, 0, control->input_nlines, "checkpoint_interval", 0, "MISSING: checkpoint_interval\nSet to default of 0 (none)\n", 0);
 
 
 	//Scanning lines for models
-	control->epsr = GetInputValueDouble(control, 0, control->input_nlines, "relative_permittivity", 1.0, "MISSING: relative_permittivity\nSetting to default 1.0\n", 0);
+	//control->epsr = GetInputValueDouble(control, 0, control->input_nlines, "relative_permittivity", 1.0, "MISSING: relative_permittivity\nSetting to default 1.0\n", 0);
 	//control->fsubc = GetInputValueInt(&str, 0, nlines, "field_subcycle", 1, "MISSING: Field sub-cycle setting\nSetting to default 1 (solve very time step)\n", 0);
-	control->fsubc = 1;
-	control->sid = GetInputValueInt(control, 0, control->input_nlines, "solver_id", 31, "MISSING: Field solver method (solver_id)\nSetting to default 31 - Hypre PFMG preconditioner with GMRES\n", 0);
+	//control->fsubc = 1;
+	//control->sid = GetInputValueInt(control, 0, control->input_nlines, "solver_id", 31, "MISSING: Field solver method (solver_id)\nSetting to default 31 - Hypre PFMG preconditioner with GMRES\n", 0);
 	//grid->hypre_gpu = GetInputValueInt(control, 0, control->input_nlines, "hypre_gpu", 0, "MISSING: Field Hypre GPU setting (hypre_gpu)\nSetting to default 0 (use CPU solver)\n", 0);
 	control->seed_input = GetInputValueInt(control, 0, control->input_nlines, "random_seed", -1, "Setting random seed from dev/urandom\n\n", 0);
 
@@ -319,10 +319,7 @@ void ProcessingInput(struct Control *control, struct AllSpecies *allspecies, str
 
 
 	//Scanning the lines for output settings
-	output->TotalParticlesFlag = GetInputValueInt(control, 0, control->input_nlines, "print_total_particles", 0, "MISSING: print_total_particles flag\nSet to default of 0 (none)\n", 0);
-	output->TotalMomentumFlag = GetInputValueInt(control, 0, control->input_nlines, "print_total_momentum", 0, "MISSING: print_total_momentum flag\nSet to default of 0 (none)\n", 0);
-	output->TotalEnergyFlag = GetInputValueInt(control, 0, control->input_nlines, "print_total_energy", 0, "MISSING: print_total_energy flag\nSet to default of 0 (none)\n", 0);
-
+	
 
 	//Allocating memory for the phase space diagnostics (these will be read in later)
 	output->phase = (struct PhaseDiagnostic *) malloc(output->num_phase*sizeof(struct PhaseDiagnostic));
@@ -390,14 +387,14 @@ void ProcessingSpeciesInput(struct Control *control, struct AllSpecies *allspeci
 	//Scanning the lines for information on each species
 	for (i = 0; i < nspecies; i++) {
 		allspecies->species[i].snum = GetInputValueInt(control, slines[i], slines[i+1], "species", 0, "MISSING: Species number (species)\nEXITING\n", 1);
-		allspecies->species[i].N = (ptype) GetInputValueDouble(control, slines[i], slines[i+1], "clumping", 1.0, "MISSING: Species clumping factor (clumping)\nEXITING\n", 1);
+		allspecies->species[i].N = 1.0; //(ptype) GetInputValueDouble(control, slines[i], slines[i+1], "clumping", 1.0, "MISSING: Species clumping factor (clumping)\nEXITING\n", 1);
 		allspecies->species[i].Q = (ptype) GetInputValueDouble(control, slines[i], slines[i+1], "charge", 1.0, "MISSING: Species charge (charge)\nEXITING\n", 1);
 		allspecies->species[i].M = (ptype) GetInputValueDouble(control, slines[i], slines[i+1], "mass", 1.0, "MISSING: Species mass (mass)\nEXITING\n", 1);
-		allspecies->species[i].mag = GetInputValueInt(control, slines[i], slines[i+1], "magnetized", 1, "MISSING: Species magnetization setting (magnetized)\nSetting to default 1 (magnetized)\n", 0);
+		allspecies->species[i].mag = 1; //GetInputValueInt(control, slines[i], slines[i+1], "magnetized", 1, "MISSING: Species magnetization setting (magnetized)\nSetting to default 1 (magnetized)\n", 0);
 		//allspecies->species[i].subc = GetInputValueInt(control, slines[i], slines[i+1], "subcycle", 1, "MISSING: Species subcycle setting (subcycle)\nSetting to default 1 (push every time step)\n", 0);
-		allspecies->species[i].subc = GetInputValueInt(control, slines[i], slines[i+1], "subcycle", 1, "", 0);
+		allspecies->species[i].subc = 1; //GetInputValueInt(control, slines[i], slines[i+1], "subcycle", 1, "", 0);
 		//allspecies->species[i].print_frac = GetInputValueDouble(control, slines[i], slines[i+1], "print_frac", 0.0, "MISSING: Species print_frac\nSetting to default of 0.0 (none)\n", 0); //Not needed now we have a phase space diagnostic. But might be needed in the future for particle tracing.
-		allspecies->species[i].print_frac = GetInputValueDouble(control, slines[i], slines[i+1], "print_frac", 1.0, "", 0);
+		allspecies->species[i].print_frac = 1.0; //GetInputValueDouble(control, slines[i], slines[i+1], "print_frac", 1.0, "", 0);
 	}
 
 	//Checking for repeated numbers. Exiting if found.
@@ -483,15 +480,16 @@ void ProcessingCreationInput(struct Control *control, struct AllCreation *allcre
 				//printf("Loading Plasma %d\n",np);
 				allcreation->plasma[np].plasma_num = GetInputValueInt(control, clines[i], clines[i+1], "plasma", 0, "MISSING: plasma number\nEXITING\n", 1);
 				allcreation->plasma[np].snum = GetInputValueInt(control, clines[i], clines[i+1], "plasma_species", 0, "MISSING: plasma_species\nEXITING\n", 1);
-				allcreation->plasma[np].n0_plasma = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_density", 0, "MISSING: plasma_density\nEXITING\n", 1);
+				//allcreation->plasma[np].n0_plasma = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_density", 0, "MISSING: plasma_density\nEXITING\n", 1);
+				allcreation->plasma[np].npart = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_num_part", 0, "MISSING: plasma_num_part\nEXITING\n", 1);
 				allcreation->plasma[np].xmin_glob = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_xmin", 0.0, "MISSING: plasma_xmin\nEXITING\n", 1);
 				allcreation->plasma[np].xmax_glob = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_xmax", 0.0, "MISSING: plasma_xmax\nEXITING\n", 1);
 				allcreation->plasma[np].ymin_glob = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_ymin", 0.0, "MISSING: plasma_ymin\nEXITING\n", 1);
 				allcreation->plasma[np].ymax_glob = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_ymax", 0.0, "MISSING: plasma_ymax\nEXITING\n", 1);
 				allcreation->plasma[np].T0 = GetInputValueDouble(control, clines[i], clines[i+1], "plasma_temperature", 0.0, "MISSING: plasma_temperature\nSetting to 0.0\n", 0);
-				allcreation->plasma[np].Kx = (ptype) GetInputValueDouble(control, clines[i], clines[i+1], "plasma_kinetic_x", 0.0, "MISSING: plasma_kinetic_x\nSetting to 0.0\n", 0);
-				allcreation->plasma[np].Ky = (ptype) GetInputValueDouble(control, clines[i], clines[i+1], "plasma_kinetic_y", 0.0, "MISSING: plasma_kinetic_y\nSetting to 0.0\n", 0);
-				allcreation->plasma[np].Kz = (ptype) GetInputValueDouble(control, clines[i], clines[i+1], "plasma_kinetic_z", 0.0, "MISSING: plasma_kinetic_z\nSetting to 0.0\n", 0);
+				allcreation->plasma[np].Kx = 0.0;//(ptype) GetInputValueDouble(control, clines[i], clines[i+1], "plasma_kinetic_x", 0.0, "MISSING: plasma_kinetic_x\nSetting to 0.0\n", 0);
+				allcreation->plasma[np].Ky = 0.0;//(ptype) GetInputValueDouble(control, clines[i], clines[i+1], "plasma_kinetic_y", 0.0, "MISSING: plasma_kinetic_y\nSetting to 0.0\n", 0);
+				allcreation->plasma[np].Kz = 0.0;//(ptype) GetInputValueDouble(control, clines[i], clines[i+1], "plasma_kinetic_z", 0.0, "MISSING: plasma_kinetic_z\nSetting to 0.0\n", 0);
 
 				sf = 0;
 				for (j = 0; j < nspecies; j++) {

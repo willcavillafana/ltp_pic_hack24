@@ -565,7 +565,7 @@ void InitializeSpecies(struct Species *species, struct AllCreation *creation, st
 	unsigned long iprn;
 
 	double Npart_plasma_float;
-	long long Npart_plasma_int = 0;
+	int Npart_plasma_int = 0;
 
 
 	//Setting up the PRNG
@@ -590,17 +590,11 @@ void InitializeSpecies(struct Species *species, struct AllCreation *creation, st
 		if (plasma->snum == species->snum)
 		{
 
-			Npart_plasma_float = (plasma->xmax_glob - plasma->xmin_glob)*(plasma->ymax_glob - plasma->ymin_glob)*plasma->n0_plasma/species->N;
-			Npart_plasma_int += (long long) Npart_plasma_float;
-
-			plasma->Npart_plasma_local = (int) Npart_plasma_float;
+			Npart_plasma_int += plasma->npart;
 
 		}
 	}
 
-
-
-	//printf("\nNpart_plasma_int = %lld\n",Npart_plasma_int);
 
 	//Setting the initial particle counters to zero
 	species->Npart = 0;
@@ -807,12 +801,10 @@ void InitializePlasma(struct Species *species, struct CreatePlasma *plasma, stru
     ptype xwidth, ywidth;
     double print_rand;
     double V0;
-    //unsigned long iprn;
-    //double xprn;
 
 	//Total number of particles to try and create
 	istart = species->Npart_local;
-	iend = istart + plasma->Npart_plasma_local;
+	iend = istart + plasma->npart;
 
 	//Setting up the PRNG
 	plasma->rncount = (unsigned long *) malloc(sizeof(unsigned long));
@@ -859,13 +851,9 @@ void InitializePlasma(struct Species *species, struct CreatePlasma *plasma, stru
     	//Need to provide a uniqie int for each PRNG generated. We allow 10 posibilities for each normally distributed number.
     	icount = plasma->rncount[0] + 33*i;
 
-        //Initializing particle position in phase space
-        x = (ptype) (get_uniform_prn(plasma->process_data, plasma->thread_data, icount, &iprn) - 0.5)*xwidth + xcenter;
-        y = (ptype) (get_uniform_prn(plasma->process_data, plasma->thread_data, icount+1, &iprn) - 0.5)*ywidth + ycenter;
-
 		//If it's in a vacuum cell, continue setting up the particle
-		species->x[j] = x;
-		species->y[j] = y;
+		species->x[j] = (ptype) (get_uniform_prn(plasma->process_data, plasma->thread_data, icount, &iprn) - 0.5)*xwidth + xcenter;
+		species->y[j] = (ptype) (get_uniform_prn(plasma->process_data, plasma->thread_data, icount+1, &iprn) - 0.5)*ywidth + ycenter;
 
         species->vx[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 2 , V0) + plasma->Vx;
         species->vy[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 12, V0) + plasma->Vy;

@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 		if (my_rank == 0) {PrintStep(&timer, k);}
 
 
-		//Counting total number of particles
+		//Counting and printing total number of particles
 		{
 			int i;
 			long long np = 0, npt;
