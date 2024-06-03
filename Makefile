@@ -9,7 +9,7 @@ CC        = mpic++
 ########################################################################
 
 #GCC
-COPTS     = -g -Wno-unused-result -O3 -march=native -fopenmp -Drestrict=__restrict__
+#COPTS     = -g -Wno-unused-result -O3 -march=native -fopenmp -Drestrict=__restrict__
 
 #INTEL Stellar
 #COPTS     = -g -O3 -xhost -Wno-unknown-pragmas -restrict -qopenmp
@@ -18,10 +18,14 @@ COPTS     = -g -Wno-unused-result -O3 -march=native -fopenmp -Drestrict=__restri
 #COPTS     = -g -w -fast -mp
 
 #NVIDIA Traverse - GPU
-#COPTS     = -g -w -fast -mp -acc=gpu #-Minfo=all
+ifeq ($(HOSTNAME),traverse.princeton.edu)
+    COPTS     = -g -w -fast -mp -acc=gpu #-Minfo=all
+endif
 
 #CRAY Perlmutter - GPU
-#COPTS     = -g -w -fast -mp -acc=gpu -target-accel=nvidia80 #-Minfo=all
+ifeq ($(HOSTNAME),perlmutter)
+    COPTS     = -g -w -fast -mp -acc=gpu -target-accel=nvidia80 #-Minfo=all
+endif
 
 CINCLUDES =
 CDEFS     =
@@ -46,6 +50,7 @@ LFLAGS    = $(LINKOPTS) $(LIBS) -lstdc++
 ALLPROGS = pic
 
 all: $(ALLPROGS)
+	@echo "Platform is $(HOSTNAME)"
 
 default: pic
 
