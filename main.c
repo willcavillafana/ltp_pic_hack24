@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	ComputeMaxProbabilities(&allspecies, &allcollisions, timer.dt);
 
 	//Printing simulation information to the log file
-	timer.flog = fopen("pic.log","a");
+	timer.flog = fopen("pic.log","w");
 
     //Synchronizing tasks prior to the time loop
     MPI_Barrier(MPI_COMM_WORLD);

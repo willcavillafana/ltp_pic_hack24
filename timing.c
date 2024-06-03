@@ -111,11 +111,11 @@ void PrintTiming(struct Timing *timer)
 
 
 		//Printing timers
-		printf("\n\n");
-		printf("timePush %f s\n", timer->timePush_avg);
-		printf("timeCollide %f s\n", timer->timeCollide_avg);
-		printf("timeBarrier %f s\n", timer->timeBarrier_avg);
-		printf("time %f s\n\n", timer->time_avg);
+		fprintf(timer->flog,"\n\n");
+		fprintf(timer->flog,"timePush %f s\n", timer->timePush_avg);
+		fprintf(timer->flog,"timeCollide %f s\n", timer->timeCollide_avg);
+		fprintf(timer->flog,"timeBarrier %f s\n", timer->timeBarrier_avg);
+		fprintf(timer->flog,"time %f s\n\n", timer->time_avg);
 
         }
 
