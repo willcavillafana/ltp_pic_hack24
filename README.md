@@ -41,7 +41,7 @@ Where `<n>` is the number of MPI tasks. Note that this code is embarassingly par
 
 `<input_file_name>.dat` is the input file which must have the `.dat` extension.
 
-An example input file, called `example.dat` is in the top directory. This file includes self explanatory labels.
+An example input file, called `example.dat` is in the top directory. This file includes self explanatory labels. If running outside of the main directory, make sure to have a copy of the `XSections/` directory since it contains important cross-section data files that are required for the run.
 
 ### Running on Traverse with slurm
 
