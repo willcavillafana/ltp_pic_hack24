@@ -938,7 +938,25 @@ inline double get_uniform_prn_new(uint64_t seed, uint64_t countin) {
 
 
 
-
+// Function to perform binary search
+int binary_search(double* arr, int size, double target) {
+    int left = 0;
+    int right = size - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (arr[mid] <= target && (mid == size - 1 || arr[mid + 1] > target)) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1; // Target not found in array
+}
 
 
 
@@ -1153,18 +1171,28 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				}
 
 				else{
-					#pragma acc loop seq
-					for (k = 0; k < nl-1; k++)
-					{
-						if (kev >= elastic[J].energy_vals[k] && kev < elastic[J].energy_vals[k+1]) {
-							e0 = elastic[J].energy_vals[k];
-							e1 = elastic[J].energy_vals[k+1];
-							xs0 = elastic[J].xsection_vals[k];
-							xs1 = elastic[J].xsection_vals[k+1];
+//					#pragma acc loop seq
+					int k = binary_search(elastic[J].energy_vals, nl, kev);
+					
+					if (k != -1 && k < nl - 1) {
+						e0 = elastic[J].energy_vals[k];
+						e1 = elastic[J].energy_vals[k + 1];
+						xs0 = elastic[J].xsection_vals[k];
+						xs1 = elastic[J].xsection_vals[k + 1];
+						
+						xs = xs0 + (kev - e0) * (xs1 - xs0) / (e1 - e0);					
 
-							xs = xs0 + (kev - e0)*(xs1 - xs0)/(e1 - e0);
-							//break; //Can't have break in parallelisation
-						}
+//					for (k = 0; k < nl-1; k++)
+//					{
+//						if (kev >= elastic[J].energy_vals[k] && kev < elastic[J].energy_vals[k+1]) {
+//							e0 = elastic[J].energy_vals[k];
+//							e1 = elastic[J].energy_vals[k+1];
+//							xs0 = elastic[J].xsection_vals[k];
+//							xs1 = elastic[J].xsection_vals[k+1];
+//
+//							xs = xs0 + (kev - e0)*(xs1 - xs0)/(e1 - e0);
+//							//break; //Can't have break in parallelisation
+//						}
 					}
 				}
 
@@ -1278,19 +1306,29 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				}
 
 				else{
-					#pragma acc loop seq
-					for (k = 0; k < nl-1; k++)
-					{
-						if (kerel >= elastic[J].energy_vals[k] && kerel < elastic[J].energy_vals[k+1]) {
-							e0 = elastic[J].energy_vals[k];
-							e1 = elastic[J].energy_vals[k+1];
-							xs0 = elastic[J].xsection_vals[k];
-							xs1 = elastic[J].xsection_vals[k+1];
-
-							xs = xs0 + (kerel - e0)*(xs1 - xs0)/(e1 - e0);
-							//break; //Can't have break in parallelisation
-						}
-					}
+					int k = binary_search(elastic[J].energy_vals, nl, kev);
+					
+					if (k != -1 && k < nl - 1) {
+						e0 = elastic[J].energy_vals[k];
+						e1 = elastic[J].energy_vals[k + 1];
+						xs0 = elastic[J].xsection_vals[k];
+						xs1 = elastic[J].xsection_vals[k + 1];
+						
+						xs = xs0 + (kev - e0) * (xs1 - xs0) / (e1 - e0);		
+//					#pragma acc loop seq
+//					for (k = 0; k < nl-1; k++)
+//					{
+//						if (kerel >= elastic[J].energy_vals[k] && kerel < elastic[J].energy_vals[k+1]) {
+//							e0 = elastic[J].energy_vals[k];
+//							e1 = elastic[J].energy_vals[k+1];
+//							xs0 = elastic[J].xsection_vals[k];
+//							xs1 = elastic[J].xsection_vals[k+1];
+//
+//							xs = xs0 + (kerel - e0)*(xs1 - xs0)/(e1 - e0);
+//							//break; //Can't have break in parallelisation
+//						}
+//					}
+                                        }
 				}
 
 				//Updating the propability
@@ -1396,19 +1434,28 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				}
 
 				else{
-					#pragma acc loop seq
-					for (k = 0; k < nl-1; k++)
-					{
-						if (kev >= excite[J].energy_vals[k] && kev < excite[J].energy_vals[k+1]) {
-							e0 = excite[J].energy_vals[k];
-							e1 = excite[J].energy_vals[k+1];
-							xs0 = excite[J].xsection_vals[k];
-							xs1 = excite[J].xsection_vals[k+1];
-
-							xs = xs0 + (kev - e0)*(xs1 - xs0)/(e1 - e0);
-							//break; //Can't have break in parallelisation
-						}
+					int k = binary_search(excite[J].energy_vals, nl, kev);
+					if (k != -1 && k < nl - 1) {
+						e0 = excite[J].energy_vals[k];
+						e1 = excite[J].energy_vals[k + 1];
+						xs0 = excite[J].xsection_vals[k];
+						xs1 = excite[J].xsection_vals[k + 1];
+						
+						xs = xs0 + (kev - e0) * (xs1 - xs0) / (e1 - e0);	
 					}
+//					#pragma acc loop seq
+//					for (k = 0; k < nl-1; k++)
+//					{
+//						if (kev >= excite[J].energy_vals[k] && kev < excite[J].energy_vals[k+1]) {
+//							e0 = excite[J].energy_vals[k];
+//							e1 = excite[J].energy_vals[k+1];
+//							xs0 = excite[J].xsection_vals[k];
+//							xs1 = excite[J].xsection_vals[k+1];
+//
+//							xs = xs0 + (kev - e0)*(xs1 - xs0)/(e1 - e0);
+//							//break; //Can't have break in parallelisation
+//						}
+//					}
 				}
 
 				pcoll1 += ng*v*xs/numax;
@@ -1509,19 +1556,29 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				}
 
 				else{
-					#pragma acc loop seq
-					for (k = 0; k < nl-1; k++)
-					{
-						if (kev >= ionize[J].energy_vals[k] && kev < ionize[J].energy_vals[k+1]) {
-							e0 = ionize[J].energy_vals[k];
-							e1 = ionize[J].energy_vals[k+1];
-							xs0 = ionize[J].xsection_vals[k];
-							xs1 = ionize[J].xsection_vals[k+1];
-
-							xs = xs0 + (kev - e0)*(xs1 - xs0)/(e1 - e0);
-							//break; //Can't have break in parallelisation
-						}
-					}
+   				     int k = binary_search(ionize[J].energy_vals, nl, kev);
+				
+				     if (k != -1 && k < nl - 1) {
+					     e0 = ionize[J].energy_vals[k];
+					     e1 = ionize[J].energy_vals[k + 1];
+					     xs0 = ionize[J].xsection_vals[k];
+					     xs1 = ionize[J].xsection_vals[k + 1];
+					
+					     xs = xs0 + (kev - e0) * (xs1 - xs0) / (e1 - e0);		
+                                        }
+//					#pragma acc loop seq
+//					for (k = 0; k < nl-1; k++)
+//					{
+//						if (kev >= ionize[J].energy_vals[k] && kev < ionize[J].energy_vals[k+1]) {
+//							e0 = ionize[J].energy_vals[k];
+//							e1 = ionize[J].energy_vals[k+1];
+//							xs0 = ionize[J].xsection_vals[k];
+//							xs1 = ionize[J].xsection_vals[k+1];
+//
+//							xs = xs0 + (kev - e0)*(xs1 - xs0)/(e1 - e0);
+//							//break; //Can't have break in parallelisation
+//						}
+//					}
 				}
 
 				pcoll1 += ng*v*xs/numax;
@@ -1773,19 +1830,30 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				}
 
 				else{
-					#pragma acc loop seq
-					for (k = 0; k < nl-1; k++)
-					{
-						if (kerel >= cxchange[J].energy_vals[k] && kerel < cxchange[J].energy_vals[k+1]) {
-							e0 = cxchange[J].energy_vals[k];
-							e1 = cxchange[J].energy_vals[k+1];
-							xs0 = cxchange[J].xsection_vals[k];
-							xs1 = cxchange[J].xsection_vals[k+1];
+                                        int k = binary_search(cxchange[J].energy_vals, nl, kev);
 
-							xs = xs0 + (kerel - e0)*(xs1 - xs0)/(e1 - e0);
-							//break; //Can't have break in parallelisation
-						}
+                                        if (k != -1 && k < nl - 1) {
+                                                e0 = cxchange[J].energy_vals[k];
+                                                e1 = cxchange[J].energy_vals[k + 1];
+                                                xs0 = cxchange[J].xsection_vals[k];
+                                                xs1 = cxchange[J].xsection_vals[k + 1];
+
+                                                xs = xs0 + (kev - e0) * (xs1 - xs0) / (e1 - e0);
 					}
+
+//					#pragma acc loop seq
+//					for (k = 0; k < nl-1; k++)
+//					{
+//						if (kerel >= cxchange[J].energy_vals[k] && kerel < cxchange[J].energy_vals[k+1]) {
+//							e0 = cxchange[J].energy_vals[k];
+//							e1 = cxchange[J].energy_vals[k+1];
+//							xs0 = cxchange[J].xsection_vals[k];
+//							xs1 = cxchange[J].xsection_vals[k+1];
+//
+//							xs = xs0 + (kerel - e0)*(xs1 - xs0)/(e1 - e0);
+//							//break; //Can't have break in parallelisation
+//						}
+//					}
 				}
 
 				pcoll1 += ng*vrel*xs/numax;
