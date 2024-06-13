@@ -19,7 +19,7 @@ CC        = mpic++
 
 #NVIDIA Traverse - GPU
 ifeq ($(HOSTNAME),traverse.princeton.edu)
-    COPTS     = -g -w -fast -mp -acc=gpu #-Minfo=all
+    COPTS     = -g -w -fast -mp -acc=gpu -gpu=lineinfo -lcurand -cuda #-Minfo=all
 endif
 
 #NVIDIA Traverse - GPU
