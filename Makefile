@@ -22,6 +22,16 @@ ifeq ($(HOSTNAME),traverse.princeton.edu)
     COPTS     = -g -w -fast -mp -acc=gpu #-Minfo=all
 endif
 
+#NVIDIA Traverse - GPU
+ifeq ($(HOSTNAME),della8.princeton.edu)
+    COPTS     = -g -w -fast -mp -acc=gpu -Minfo=accel -gpu=lineinfo -lcurand -cuda#-Minfo=all
+#    COPTS     = -g -w -fast -mp -acc=gpu #-Minfo=all
+endif
+
+ifeq ($(HOSTNAME),della-gh.princeton.edu)
+    COPTS     = -g -w -fast -mp -acc=gpu -Minfo=accel -gpu=lineinfo -lcurand -cuda#-Minfo=all
+#    COPTS     = -g -w -fast -mp -acc=gpu #-Minfo=all
+endif
 #CRAY Perlmutter - GPU
 ifeq ($(HOSTNAME),perlmutter)
     COPTS     = -g -w -fast -mp -acc=gpu -target-accel=nvidia80 #-Minfo=all
