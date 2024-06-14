@@ -1035,7 +1035,7 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 	//printf("\nspecies->coll_index_len = %d",species->coll_index_len);
 
 	//Creating the collision index list
-	#pragma acc parallel default(present) copy(jj) present(species[0:1],species->coll_index[:species->coll_index_len])
+	#pragma acc parallel async default(present) copy(jj) present(species[0:1],species->coll_index[:species->coll_index_len])
 	{
 	unsigned long icount, iprn;
 	int kk;
@@ -1146,7 +1146,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 
 		//Drawing a random number for testing which collision occurs
 		icount = species->rncount + i;
-		srand = get_uniform_prn(species->process_data, species->thread_data, icount+0, &iprn);
+		srand = get_uniform_prn_new(species->seed, icount+0);
+		//srand = get_uniform_prn(species->process_data, species->thread_data, icount+0, &iprn);
 
 		//Cycling through the collisions of this species to determine which collision occurs
 		#pragma acc loop seq
@@ -1231,7 +1232,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					cp = cos(phi);
 
 					//Scattering angles
-					rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+0, &iprn);
+					rand = get_uniform_prn_new(elastic[J].seed, jcount+0);
+					//rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+0, &iprn);
 					#ifdef BENCH_TURNER
 					chi = acos(1.0 - 2.0*rand);
 					#else
@@ -1243,7 +1245,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					}
 					#endif
 
-					rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+1, &iprn);
+					rand = get_uniform_prn_new(elastic[J].seed, jcount+1);
+					//rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+1, &iprn);
 					eta = 2.0*PI*rand;
 
 					sc  = sin(chi);
@@ -1354,14 +1357,16 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					g = sqrt(gx*gx + gy*gy + gz*gz);
 
 					//Scattering angles
-					rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+30, &iprn);
+					rand = get_uniform_prn_new(elastic[J].seed, jcount+30);
+					//rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+30, &iprn);
 					coschi = sqrt(rand);
 					if (coschi*coschi > 1.0) {
 						coschi = 1.0;
 					}
 					sinchi = sqrt(1.0 - coschi*coschi);
 
-					rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+31, &iprn);
+					rand = get_uniform_prn_new(elastic[J].seed, jcount+31);
+					//rand = get_uniform_prn(elastic[J].process_data, elastic[J].thread_data, jcount+31, &iprn);
 					phi = 2.0*PI*rand;
 					cosphi = cos(phi);
 					sinphi = sin(phi);
@@ -1497,7 +1502,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					g = sqrt(2.0*ke/mele/M);
 
 					//Scattering angles
-					rand = get_uniform_prn(excite[J].process_data, excite[J].thread_data, jcount+0, &iprn);
+					rand = get_uniform_prn_new(excite[J].seed, jcount+0);
+					//rand = get_uniform_prn(excite[J].process_data, excite[J].thread_data, jcount+0, &iprn);
 
 					#ifdef BENCH_TURNER
 					chi = acos(1.0 - 2.0*rand);
@@ -1511,7 +1517,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					}
 					#endif
 
-					rand = get_uniform_prn(excite[J].process_data, excite[J].thread_data, jcount+1, &iprn);
+					rand = get_uniform_prn_new(excite[J].seed, jcount+1);
+					//rand = get_uniform_prn(excite[J].process_data, excite[J].thread_data, jcount+1, &iprn);
 					eta = 2.0*PI*rand;
 
 					sc  = sin(chi);
@@ -1622,7 +1629,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					sp = sin(phi);
 					cp = cos(phi);
 
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+0, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+0);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+0, &iprn);
 					ke = 0.5*M*mele*g*g;
 					ke1 = fabs(ke - wion*qele);
 					#ifdef BENCH_TURNER
@@ -1639,7 +1647,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					g2 = sqrt(2.0*ke2/mele/M);
 
 					//Computing scattering angles
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+1, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+1);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+1, &iprn);
 
 					#ifdef BENCH_TURNER
 					chi1 = acos(1.0 - 2.0*rand);
@@ -1652,7 +1661,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					}
 					#endif
 
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+2, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+2);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+2, &iprn);
 					#ifdef BENCH_TURNER
 					chi2 = acos(1.0 - 2.0*rand);
 					#else
@@ -1664,10 +1674,12 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					}
 					#endif
 
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+3, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+3);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+3, &iprn);
 					eta1 = 2.0*PI*rand;
 
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+4, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+4);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+4, &iprn);
 					eta2 = 2.0*PI*rand;
 
 					sc1  = sin(chi1);
@@ -1723,7 +1735,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 
 					buff_eout->tag_recv[le] = 2; //Ionization tag
 
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+5, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+5);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+5, &iprn);
 
 					if (rand < allspecies->species[seo].print_frac) {
 					  buff_eout->print_tag_recv[le] = 1;
@@ -1736,7 +1749,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					//Determining the number of new ions to create
 					inew = ionize->inew_int;
 
-					rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+6, &iprn);
+					rand = get_uniform_prn_new(ionize[J].seed, jcount+6);
+					//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+6, &iprn);
 					if (rand < ionize->inew_frac) {
 						inew++;
 					}
@@ -1770,7 +1784,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 
 						buff_iout->tag_recv[li] = 2;
 
-		      			rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+30, &iprn);
+		      			rand = get_uniform_prn_new(ionize[J].seed, jcount+30);
+		      			//rand = get_uniform_prn(ionize[J].process_data, ionize[J].thread_data, jcount+30, &iprn);
 
 						if (rand < allspecies->species[sio].print_frac) {
 						  buff_iout->print_tag_recv[li] = 1;
