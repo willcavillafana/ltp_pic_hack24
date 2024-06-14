@@ -855,9 +855,12 @@ void InitializePlasma(struct Species *species, struct CreatePlasma *plasma, stru
 		species->x[j] = (ptype) (get_uniform_prn(plasma->process_data, plasma->thread_data, icount, &iprn) - 0.5)*xwidth + xcenter;
 		species->y[j] = (ptype) (get_uniform_prn(plasma->process_data, plasma->thread_data, icount+1, &iprn) - 0.5)*ywidth + ycenter;
 
-        species->vx[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 2 , V0) + plasma->Vx;
-        species->vy[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 12, V0) + plasma->Vy;
-        species->vz[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 22, V0) + plasma->Vz;
+        species->vx[j] = (ptype) RanGaussianDesprng(plasma->seed, icount + 2 , V0) + plasma->Vx;
+        species->vy[j] = (ptype) RanGaussianDesprng(plasma->seed, icount + 12, V0) + plasma->Vy;
+        species->vz[j] = (ptype) RanGaussianDesprng(plasma->seed, icount + 22, V0) + plasma->Vz;
+        //species->vx[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 2 , V0) + plasma->Vx;
+        //species->vy[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 12, V0) + plasma->Vy;
+        //species->vz[j] = (ptype) RanGaussianDesprng(plasma->process_data, plasma->thread_data, icount + 22, V0) + plasma->Vz;
 
 		//Setting the particle boundary status (0 means within the region)
 		species->xbc[j] = 0;

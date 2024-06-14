@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdint.h>
 
 //Declaration of global_seed variable
 unsigned long global_seed;
@@ -181,7 +182,46 @@ void InitializeGlobalSeed(struct Control *control)
 
 
 
+#pragma acc routine(philox4_32) seq
+inline void philox4_32(uint32_t k0, uint32_t k1, uint32_t count[4], uint32_t output[4]) {
 
+    uint32_t R0 = count[0];
+    uint32_t L0 = count[1];
+    uint32_t R1 = count[2];
+    uint32_t L1 = count[3];
+
+    // Can replace __umulhi(a, b) with uint32_t(uint64_t(a)*b >> 32) if intrinsic is unavailable
+
+    #pragma unroll
+    for (int i = 0; i < 10; ++i) {
+        uint32_t L1_new = R1 * 0xD2511F53;
+        uint32_t R1_new = __umulhi(R0, 0xCD9E8D57) ^ k0 ^ L0;
+        uint32_t L0_new = R0 * 0xCD9E8D57;
+        uint32_t R0_new = __umulhi(R1, 0xD2511F53) ^ k1 ^ L1;
+
+        k0 += 0xBB67AE85;
+        k1 += 0x9E3779B9;
+
+        R0 = R0_new;
+        R1 = R1_new;
+        L0 = L0_new;
+        L1 = L1_new;
+    }
+
+    output[0] = R0;
+    output[1] = L0;
+    output[2] = R1;
+    output[3] = L1;
+}
+
+#pragma acc routine(get_uniform_prn_new) seq
+inline double get_uniform_prn_new(uint64_t seed, uint64_t countin) {
+    uint32_t output[4];
+    uint32_t count[] = {uint32_t(countin), uint32_t(countin >> 32), 0, 0};
+    philox4_32(uint32_t(seed), uint32_t(seed >> 32), count, output);
+
+    return ((uint64_t(output[1]) << 32) | output[0]) / (1.0 + ULONG_MAX);
+}
 
 
 /*
@@ -190,15 +230,17 @@ LAST EDIT: Created
 EDIT DATE: 1/20/2021
 NAME OF EDITOR: Tasman Powis
 */
-double RanGaussianDesprng(desprng_common_t *process_data, desprng_individual_t *thread_data, unsigned long rcount, double sigma)
+double RanGaussianDesprng(unsigned long seed, unsigned long rcount, double sigma)
+//double RanGaussianDesprng(desprng_common_t *process_data, desprng_individual_t *thread_data, unsigned long rcount, double sigma)
 {
-	unsigned long  U, sign, i, j, iprn;
+	unsigned long  U, sign, i, j;//;, iprn;
 	double  x, y;
 
 	//printf("wtab[0] = %f\n",wtab[0]);
 
 	while (1) {
-		U = (unsigned long) (get_uniform_prn(process_data, thread_data, rcount, &iprn)*4294967295); rcount++;
+		U = (unsigned long) (get_uniform_prn_new(seed , rcount)*4294967295); rcount++;
+		//U = (unsigned long) (get_uniform_prn(process_data, thread_data, rcount, &iprn)*4294967295); rcount++;
 		i = U & 0x0000007F;		/* 7 bit to choose the step */
 		sign = U & 0x00000080;	/* 1 bit for the sign */
 		j = U>>8;			/* 24 bit for the x-value */
@@ -210,10 +252,13 @@ double RanGaussianDesprng(desprng_common_t *process_data, desprng_individual_t *
 			double  y0, y1;
 			y0 = ytab[i];
 			y1 = ytab[i+1];
-			y = y1+(y0-y1)*get_uniform_prn(process_data, thread_data, rcount, &iprn); rcount++;
+			y = y1+(y0-y1)*get_uniform_prn_new(seed, rcount); rcount++;
+			//y = y1+(y0-y1)*get_uniform_prn(process_data, thread_data, rcount, &iprn); rcount++;
 		} else {
-			x = PARAM_R - log(1.0-get_uniform_prn(process_data, thread_data, rcount, &iprn))/PARAM_R; rcount++;
-			y = exp(-PARAM_R*(x-0.5*PARAM_R))*get_uniform_prn(process_data, thread_data, rcount, &iprn); rcount++;
+			x = PARAM_R - log(1.0-get_uniform_prn_new(seed, rcount))/PARAM_R; rcount++;
+			y = exp(-PARAM_R*(x-0.5*PARAM_R))*get_uniform_prn_new(seed, rcount); rcount++;
+			//x = PARAM_R - log(1.0-get_uniform_prn(process_data, thread_data, rcount, &iprn))/PARAM_R; rcount++;
+			//y = exp(-PARAM_R*(x-0.5*PARAM_R))*get_uniform_prn(process_data, thread_data, rcount, &iprn); rcount++;
 		}
 		if (y < exp(-0.5*x*x))  break;
 	}

@@ -553,7 +553,8 @@ void Barrier(struct Timing *timer);
 //Numeric
 void InitializeGlobalSeed(struct Control *control);
 #pragma acc routine(RanGaussianDesprng) seq
-double RanGaussianDesprng(desprng_common_t *process_data, desprng_individual_t *thread_data, unsigned long rcount, double sigma);
+double RanGaussianDesprng(unsigned long seed, unsigned long rcount, double sigma);
+//double RanGaussianDesprng(desprng_common_t *process_data, desprng_individual_t *thread_data, unsigned long rcount, double sigma);
 #pragma acc routine(HalfRanGaussianDesprng) seq
 double HalfRanGaussianDesprng(desprng_common_t *process_data, desprng_individual_t *thread_data, unsigned long rcount, double sigma);
 

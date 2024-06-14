@@ -1035,7 +1035,7 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 	//printf("\nspecies->coll_index_len = %d",species->coll_index_len);
 
 	//Creating the collision index list
-	#pragma acc parallel async default(present) copy(jj) present(species[0:1],species->coll_index[:species->coll_index_len])
+	#pragma acc parallel default(present) copy(jj) present(species[0:1],species->coll_index[:species->coll_index_len])
 	{
 	unsigned long icount, iprn;
 	int kk;
@@ -1284,9 +1284,12 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				jcount = elastic[J].rncount + i*40;
 				V0 = sqrt(e_div_me*TG/MG);
 
-				vxn = (ptype) RanGaussianDesprng(elastic[J].process_data, elastic[J].thread_data, jcount + 0 , V0);
-				vyn = (ptype) RanGaussianDesprng(elastic[J].process_data, elastic[J].thread_data, jcount + 10 , V0);
-				vzn = (ptype) RanGaussianDesprng(elastic[J].process_data, elastic[J].thread_data, jcount + 20 , V0);
+				vxn = (ptype) RanGaussianDesprng(elastic[J].seed, jcount + 0 , V0);
+				vyn = (ptype) RanGaussianDesprng(elastic[J].seed, jcount + 10 , V0);
+				vzn = (ptype) RanGaussianDesprng(elastic[J].seed, jcount + 20 , V0);
+				//vxn = (ptype) RanGaussianDesprng(elastic[J].process_data, elastic[J].thread_data, jcount + 0 , V0);
+				//vyn = (ptype) RanGaussianDesprng(elastic[J].process_data, elastic[J].thread_data, jcount + 10 , V0);
+				//vzn = (ptype) RanGaussianDesprng(elastic[J].process_data, elastic[J].thread_data, jcount + 20 , V0);
 
 				//Relative velocity of ion to sampled neutral
 				vxrel = vx - vxn;
@@ -1764,9 +1767,12 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					for (m = 0; m < inew; m++) {
 
 						//Velocity components of new ion
-						vxion = (ptype) RanGaussianDesprng(ionize[J].process_data, ionize[J].thread_data, jcount , V0);
-						vyion = (ptype) RanGaussianDesprng(ionize[J].process_data, ionize[J].thread_data, jcount + 10, V0);
-						vzion = (ptype) RanGaussianDesprng(ionize[J].process_data, ionize[J].thread_data, jcount + 20, V0);
+						vxion = (ptype) RanGaussianDesprng(ionize[j].seed, jcount, V0);
+						vyion = (ptype) RanGaussianDesprng(ionize[j].seed, jcount + 10, V0);
+						vzion = (ptype) RanGaussianDesprng(ionize[j].seed, jcount + 20, V0);
+						//vxion = (ptype) rangaussiandesprng(ionize[j].process_data, ionize[j].thread_data, jcount , v0);
+						//vyion = (ptype) rangaussiandesprng(ionize[j].process_data, ionize[j].thread_data, jcount + 10, v0);
+						//vzion = (ptype) rangaussiandesprng(ionize[j].process_data, ionize[j].thread_data, jcount + 20, v0);
 
 						#ifdef _OPENACC
 						#pragma acc atomic capture
@@ -1816,9 +1822,12 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 				jcount = cxchange[J].rncount + i*50;
 				V0 = sqrt(e_div_me*TG/MG);
 
-				vxn = (ptype) RanGaussianDesprng(cxchange[J].process_data, cxchange[J].thread_data, jcount + 0 , V0);
-				vyn = (ptype) RanGaussianDesprng(cxchange[J].process_data, cxchange[J].thread_data, jcount + 10 , V0);
-				vzn = (ptype) RanGaussianDesprng(cxchange[J].process_data, cxchange[J].thread_data, jcount + 20 , V0);
+				vxn = (ptype) RanGaussianDesprng(cxchange[J].seed, jcount + 0 , V0);
+				vyn = (ptype) RanGaussianDesprng(cxchange[J].seed, jcount + 10 , V0);
+				vzn = (ptype) RanGaussianDesprng(cxchange[J].seed, jcount + 20 , V0);
+				//vxn = (ptype) RanGaussianDesprng(cxchange[J].process_data, cxchange[J].thread_data, jcount + 0 , V0);
+				//vyn = (ptype) RanGaussianDesprng(cxchange[J].process_data, cxchange[J].thread_data, jcount + 10 , V0);
+				//vzn = (ptype) RanGaussianDesprng(cxchange[J].process_data, cxchange[J].thread_data, jcount + 20 , V0);
 
 				//Relative velocity of ion to sampled neutral
 				vxrel = vx - vxn;
