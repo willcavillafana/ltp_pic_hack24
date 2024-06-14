@@ -1073,8 +1073,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 	//return;
 
 	//Updating PRNG counter
-	species->rncount += Npart_local;
-	#pragma acc update device(species->rncount)
+	// species->rncount += Npart_local;
+	// #pragma acc update device(species->rncount)
 
 
 	//Collision algorithm
@@ -1145,7 +1145,7 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 		pcoll1 = 0.0;
 
 		//Drawing a random number for testing which collision occurs
-		icount = species->rncount + i;
+		icount = species->rncount + Npart_local + i;
 		srand = get_uniform_prn_new(species->seed, icount+0);
 		//srand = get_uniform_prn(species->process_data, species->thread_data, icount+0, &iprn);
 
@@ -1957,7 +1957,7 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 
 	} //End parallel region
 
-	species->rncount += 2*ncoll;
+	species->rncount += 2*ncoll + Npart_local;
 	//#pragma acc update device(species[0:1])
 	#pragma acc update device(species->rncount)
 
