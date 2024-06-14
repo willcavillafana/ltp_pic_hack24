@@ -1,6 +1,15 @@
 #include "main.h"
 #include <stdint.h>
+#include <nvToolsExt.h>
+#include <nvToolsExtCuda.h>
 
+#ifdef NVTX
+#define NVTX_START(name) nvtxRangePushA(name)
+#define NVTX_STOP() nvtxRangePop()
+#else
+#define NVTX_START(name) {}
+#define NVTX_STOP() {}
+#endif
 
 /*
 FUNCTION DESCRIPTION: Allocate memory for each of the collision modules before they are read in from the input file.
@@ -992,12 +1001,13 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 	int ncxchange = allcollisions->num_cxchange;
 
 	//Collision counts
-	int ccoll = 0;
-	int celastic = 0;
-	int cexcite = 0;
-	int cionize = 0;
-	int ccxchange = 0;
-	int cnull = 0;
+        int collision_counter[6] = {0,0,0,0,0,0}; 
+//	int ccoll = 0;
+//	int celastic = 0;
+//	int cexcite = 0;
+//	int cionize = 0;
+//	int ccxchange = 0;
+//	int cnull = 0;
 
 	//Species properties
 	double M = species->M;
@@ -1079,7 +1089,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 
 	//Collision algorithm
 	#ifdef _OPENACC
-	#pragma acc parallel default(present) copy(ccoll,celastic,cexcite,cionize,ccxchange,cnull) present(elastic[:nelastic],excite[:nexcite],ionize[:nionize],cxchange[:ncxchange],species->coll_index[:species->coll_index_len])
+	#pragma acc parallel default(present) copy(collision_counter[0:6]) present(elastic[:nelastic],excite[:nexcite],ionize[:nionize],cxchange[:ncxchange],species->coll_index[:species->coll_index_len])
+	//#pragma acc parallel default(present) copy(ccoll,celastic,cexcite,cionize,ccxchange,cnull) present(elastic[:nelastic],excite[:nexcite],ionize[:nionize],cxchange[:ncxchange],species->coll_index[:species->coll_index_len])
 	//#pragma acc parallel default(present) copy(ccoll,celastic,cexcite,cionize,ccxchange,cnull)
 	//#pragma acc parallel default(present) copy(ccoll,celastic,cexcite,cionize,ccxchange,cnull) present(elastic[:nelastic],excite[:nexcite],ionize[:nionize],cxchange[:ncxchange]) vector_length(1024)
 	#else
@@ -1210,7 +1221,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					#else
 					#pragma omp atomic
 					#endif
-					celastic++;
+					collision_counter[1]++;
+					//celastic++;
 
 
 
@@ -1348,7 +1360,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					#else
 					#pragma omp atomic
 					#endif
-					celastic++;
+					collision_counter[1]++;
+					//celastic++;
 
 
 
@@ -1479,7 +1492,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					#else
 					#pragma omp atomic
 					#endif
-					cexcite++;
+					collision_counter[2]++;
+					//cexcite++;
 
 					//COLLISION ALGORITHM
 					jcount = excite[J].rncount + i*2;
@@ -1612,7 +1626,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					#else
 					#pragma omp atomic
 					#endif
-					cionize++;
+					collision_counter[3]++;
+					//cionize++;
 
 					//COLLISION ALGORITHM
 					//jcount = ionize[J].rncount + (i-istart)*40;
@@ -1890,7 +1905,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 					#else
 					#pragma omp atomic
 					#endif
-					ccxchange++;
+					collision_counter[4]++;
+					//ccxchange++;
 
 					//COLLISION ALGORITHM
 					VX[I] = vxn;
@@ -1914,7 +1930,8 @@ void CollideParticlesNew(struct AllSpecies *allspecies, struct AllCollisions *al
 			#else
 			#pragma omp atomic
 			#endif
-			cnull++;
+			collision_counter[5]++;
+			//cnull++;
 		}
 
 	} //End loop over particles

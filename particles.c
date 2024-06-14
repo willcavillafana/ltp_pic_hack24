@@ -1,5 +1,6 @@
 #include "main.h"
-
+#include <nvToolsExt.h>
+#include <nvToolsExtCuda.h>
 /*
 FUNCTION DESCRIPTION: Allocate the memory for all species structures. The allspecies structure contains an array of species structures. These structures are agnostic of the creation routines.
 LAST EDIT: Updated and clarified labeling
@@ -1230,6 +1231,7 @@ NAME OF EDITOR: Tasman Powis
 */
 void PushParticles(struct Species *species, double dt)
 {
+        nvtxRangePushA("ptcl push");
 	//Particle properties
 	const ptype q_div_m = (ptype) e_div_me*species->Q/species->M;
 	const ptype q_dth_div_m = (ptype) 0.5*dt*q_div_m;
@@ -1336,7 +1338,8 @@ void PushParticles(struct Species *species, double dt)
     }
     }
 
-
+    nvtxRangePop();
+	
 }
 
 
